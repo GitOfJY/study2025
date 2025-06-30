@@ -1,11 +1,17 @@
 package thead.sync;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import static util.MyLogger.log;
 import static util.ThreadUtils.sleep;
 
-public class BankAccountV3 implements BankAccount{
+public class BankAccountV6 implements BankAccount{
     private int balance;
 
-    public BankAccountV3(int initialBalance) {
+    private final Lock lock = new ReentrantLock();
+
+    public BankAccountV6(int initialBalance) {
         this.balance = initialBalance;
     }
 
@@ -13,7 +19,19 @@ public class BankAccountV3 implements BankAccount{
     public boolean withdraw(int amount) {
         log("거래시작 : " + getClass().getSimpleName());
 
-        synchronized(this) {
+        try {
+            if (!lock.tryLock(500, TimeUnit.MILLISECONDS)) {
+                log("[진입 실패] 이미 처리중인 작업이 있습니다.");
+                return false;
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        // ReentrantLock 이용해 lock 걸기
+        lock.lock();
+
+        try {
             // == 임계영역 시작 ==
             log("[검증 시작] 출금액 : " + amount +", 잔액 : " + balance);
             // 잔고가 출금액 보다 적으면, 진행하면 안됨
@@ -30,14 +48,22 @@ public class BankAccountV3 implements BankAccount{
             balance = balance - amount;
             log("[출금 종료] 출금액 : " + amount + ", 잔액 : " + balance);
             // == 임계영역 종료 ==
+        } finally {
+            // ReentrantLock 이용해 lock 해제
+            lock.unlock();
         }
-
+        
         log("거래 종료");
         return true;
     }
 
     @Override
-    public synchronized int getBalance() {
-        return balance;
+    public int getBalance() {
+        lock.lock();
+        try {
+            return balance;
+        } finally {
+            lock.unlock();
+        }
     }
 }
