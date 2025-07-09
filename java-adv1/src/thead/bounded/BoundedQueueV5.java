@@ -8,14 +8,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static util.MyLogger.log;
 
-public class BoundedQueueV4 implements BoundedQueue{
+public class BoundedQueueV5 implements BoundedQueue{
     private final Lock lock = new ReentrantLock();
-    private final Condition condition = lock.newCondition();
+    private final Condition producerCon = lock.newCondition();
+    private final Condition consumerCon = lock.newCondition();
 
     private final Queue<String> queue = new ArrayDeque<>();
     private final int max;
 
-    public BoundedQueueV4(int max) {
+    public BoundedQueueV5(int max) {
         this.max = max;
     }
 
@@ -26,15 +27,15 @@ public class BoundedQueueV4 implements BoundedQueue{
             while (queue.size() == max) {
                 log("[put] 큐가 가득 참, 생산자 대기 ");
                 try {
-                    condition.await();
+                    producerCon.await();
                     log("[put] 생산자 깨어남");
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
             queue.offer(data);
-            log("[put] 생산자 데이터 저장, condition.signal() 호출");
-            condition.signal();
+            log("[put] 생산자 데이터 저장, consumerCon.signal() 호출");
+            consumerCon.signal();
         } finally {
             lock.unlock();
         }
@@ -47,15 +48,15 @@ public class BoundedQueueV4 implements BoundedQueue{
             while (queue.isEmpty()) {
                 log("[take] 큐에 데이터 없음, 소비자 대기 ");
                 try {
-                    condition.await();
+                    consumerCon.await();
                     log("[take] 소비자 깨어남");
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
             String data = queue.poll();
-            log("[take] 소비자 데이터 획득, condition.signal() 호출");
-            condition.signal();
+            log("[take] 소비자 데이터 획득, producerCon.signal() 호출");
+            producerCon.signal();
             return data;
         } finally {
             lock.unlock();
