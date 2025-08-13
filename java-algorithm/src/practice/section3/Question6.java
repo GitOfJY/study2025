@@ -47,8 +47,6 @@ public class Question6 {
        15
        */
 
-
-        Question6 T = new Question6();
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
         int k = sc.nextInt();
@@ -56,113 +54,57 @@ public class Question6 {
         for (int i=0; i<n; i++) {
             arr[i] = sc.nextInt();
         }
-        System.out.println(T.Solution(n, k, arr));
+        System.out.println(solution(n, k, arr));
     }
 
-//    public int Solution(int n, int k, int[] arr) {
-//        int max = 0;
-//        int sum = 0;
-//        int zeroCnt = 0;
-//
-//        for (int i=0; i<n-k+1; i++) {
-//            for (int j=i; j<n-k; j++) {
-//                if ((arr[j] != 0) && (zeroCnt<k)) {
-//                    sum++;
-//                } else if ((arr[j] == 0) && (zeroCnt<k)) {
-//                    zeroCnt++;
-//                    sum++;
-//                } else if ((zeroCnt==k) && (arr[j+1] != 0)) {
-//                    sum++;
-//                } else {
-//                    sum++;
-//                    if (max < sum) {
-//                        max = sum;
-//                    }
-//                    sum = 0;
-//                    zeroCnt = 0;
-//                    break;
-//                }
-//            }
-//            sum = 0;
-//        }
-//        zeroCnt = 0;
-//        return max;
-//    }
-
-    public int Solution(int n, int k, int[] arr) {
-        int max = 0;
+    public static int solution(int n, int k, int[] arr) {
+        int answer = 0;
+        int lt = 0;
         int sum = 0;
         int zeroCnt = 0;
+        int max = 0;
 
-        for (int j=0; j<n-k+1; j++) {
-            // j = 슬라이드 시작지점
+        for (int rt = 0; rt < arr.length; rt ++) {
+            System.out.println("rt : " + rt);
 
-            System.out.println("슬라이드 시작지점 j = " + j);
-            System.out.println("----------------");
 
-            for (int h=j; h<n-k+1; h++) {
+            if (arr[rt] == 0) {
+                zeroCnt++;
+            }
+            sum += arr[rt];
 
-                System.out.println("h = " + h);
-                System.out.println("n-k = " + (n-k));
-                System.out.println("arr[j] = " + arr[h]);
-                System.out.println("arr[j+1] = " + arr[h+1]);
-                System.out.println("----------------");
+            System.out.println("zeroCnt : " + zeroCnt);
+            System.out.println("k : " + k);
 
-                if ((arr[h] != 0) && (zeroCnt<k)) {
-                    sum++;
-                    System.out.println("111111111111");
-                    System.out.println("sum = "+sum);
-                    System.out.println();
-                } else if ((arr[h] == 0) && (zeroCnt<k)) {
-                    zeroCnt++;
-                    sum++;
-                    System.out.println("222222222222222");
-                    System.out.println("zeroCnt = "+zeroCnt);
-                    System.out.println("sum = "+sum);
-                    System.out.println();
-                } else if ((zeroCnt==k) && (arr[h] == 1) && (arr[h+1] == 1)) {
-                    sum++;
-                    System.out.println("3333333333333333");
-                    System.out.println("zeroCnt = "+zeroCnt);
-                    System.out.println("sum = "+sum);
-                    System.out.println();
-                } else if ((zeroCnt==k) && (arr[h] == 0) && (arr[h+1] == 0)){
-                    System.out.println("4444444444444444");
-                    System.out.println("----------------");
-                    System.out.println(max);
-                    System.out.println(sum);
-                    System.out.println(zeroCnt);
-                    System.out.println();
-
-                    if (max < sum) {
-                        max = sum;
-                    }
-                    sum = 0;
-                    zeroCnt = 0;
-
-                    break;
-                } else if ((zeroCnt==k) && (arr[h] == 1) && (arr[h+1] == 0)){
-                    sum++;
-                    System.out.println("55555555555");
-                    System.out.println("----------------");
-                    System.out.println(max);
-                    System.out.println(sum);
-                    System.out.println(zeroCnt);
-                    System.out.println();
-
-                    if (max < sum) {
-                        max = sum;
-                    }
-                    sum = 0;
-                    zeroCnt = 0;
-
-                    break;
+            while (zeroCnt != k) {
+                sum += arr[lt++];
+                if (arr[lt] == 0) {
+                    zeroCnt ++;
                 }
 
+                System.out.println("lt : " + lt);
+                System.out.println("sum : " + sum);
             }
-            sum = 0;
+
+            if (sum > max) {
+                max = sum;
+            }
+
+            zeroCnt = 0;
+
+            System.out.println();
+            System.out.println();
         }
-        return max;
+
+        sum = max;
+
+        // map > (합, 0의 cnt) > 전체 돌면서 max값 구하기 : 시간이 너무 오래 걸릴 것 같음
+
+
+        // 14 2
+        // 1 1 0 0 1 1 0 1 1 0 1 1 0 1
+
+        return sum;
     }
 
 }

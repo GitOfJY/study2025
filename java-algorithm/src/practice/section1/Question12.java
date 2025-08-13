@@ -50,8 +50,10 @@ public class Question12 {
         String answer = "";
         String[] arr = new String[num];
 
-        for (int i=0; i<num; i++) {
-            arr[i] = str.substring(7*i, 7*i+7);
+        for (int i = 0; i < num-1; i++) {
+            arr[i] = str.substring(i, i+1);
+            System.out.println(arr.toString());
+            System.out.println(arr.toString());
         }
 
         for (String s : arr) {
