@@ -1,83 +1,109 @@
 package practice.section5;
-import java.util.*;
+
+import java.util.Scanner;
+import java.util.Stack;
 
 public class Question5 {
     public static void main(String[] args) {
-       /*
-       설명
-       현수는 1부터 100사이의 자연수가 적힌 N장의 카드를 가지고 있습니다. 같은 숫자의 카드가 여러장 있을 수 있습니다.
-       현수는 이 중 3장을 뽑아 각 카드에 적힌 수를 합한 값을 기록하려고 합니다. 3장을 뽑을 수 있는 모든 경우를 기록합니다.
-       기록한 값 중 K번째로 큰 수를 출력하는 프로그램을 작성하세요.
-       만약 큰 수부터 만들어진 수가 25 25 23 23 22 20 19......이고 K값이 3이라면 K번째 큰 값은 22입니다.
+        /*
+        여러 개의 쇠막대기를 레이저로 절단하려고 한다. 효율적인 작업을 위해서 쇠막대기를 아래에서 위로 겹쳐 놓고, 레이저를 위에서 수직으로 발사하여 쇠막대기들을 자른다.
+        쇠막대기와 레이저의 배치는 다음 조건을 만족한다.
 
+        • 쇠막대기는 자신보다 긴 쇠막대기 위에만 놓일 수 있다.
+        - 쇠막대기를 다른 쇠막대기 위에 놓는 경우 완전히 포함되도록 놓되, 끝점은 겹치지 않도록 놓는다.
+        • 각 쇠막대기를 자르는 레이저는 적어도 하나 존재한다.
+        • 레이저는 어떤 쇠막대기의 양 끝점과도 겹치지 않는다.
 
-       입력
-       첫 줄에 자연수 N(3<=N<=100)과 K(1<=K<=50) 입력되고, 그 다음 줄에 N개의 카드값이 입력된다.
+        아래 그림은 위 조건을 만족하는 예를 보여준다. 수평으로 그려진 굵은 실선은 쇠막대기이고, 점은 레이저의 위치, 수직으로 그려진 점선 화살표는 레이저의 발사 방향이다.
+        이러한 레이저와 쇠막대기의 배치는 다음과 같이 괄호를 이용하여 왼쪽부터 순서대로 표현할 수 있다.
 
+        1. 레이저는 여는 괄호와 닫는 괄호의 인접한 쌍 ‘( ) ’ 으로 표현된다. 또한, 모든 ‘( ) ’는 반드시 레이저를 표현한다.
+        2. 쇠막대기의 왼쪽 끝은 여는 괄호 ‘ ( ’ 로, 오른쪽 끝은 닫힌 괄호 ‘) ’ 로 표현된다.
 
-       출력
-       첫 줄에 K번째 수를 출력합니다. K번째 수가 존재하지 않으면 -1를 출력합니다.
+        위 예의 괄호 표현은 그림 위에 주어져 있다.
+        쇠막대기는 레이저에 의해 몇 개의 조각으로 잘려지는데, 위 예에서 가장 위에 있는 두 개의 쇠막대기는 각각 3개와 2개의 조각으로 잘려지고,
+        이와 같은 방식으로 주어진 쇠막대기들은 총 17개의 조각으로 잘려진다.
+        쇠막대기와 레이저의 배치를 나타내는 괄호 표현이 주어졌을 때, 잘려진 쇠막대기 조각의 총 개수를 구하는 프로그램을 작성하시오.
 
+        입력설명
+        한 줄에 쇠막대기와 레이저의 배치를 나타내는 괄호 표현이 공백없이 주어진다. 괄호 문자의 개수는 최대 100,000이다.
 
-       예시 입력 1
-       10 3
-       13 15 34 23 45 65 33 11 26 42
+        출력설명
+        잘려진 조각의 총 개수를 나타내는 정수를 한 줄에 출력한다.
 
+        입력예제 1
+        ()(((()())(())()))(())
 
-       90 30
-       31 40 40 49 44 53 41 25 35 53 28 36 50 38 27 23 50 42 51 20 37 48 22 37 23 42 23 39 28 30 31 18 24 41 48 40 21 25 25 28 24 41 49 30 36 35 15 52 36 17 49 26 43 44 43 37 30 41 35 20 28 25 51 16 45 15 54 54 17 40 47 27 42 22 54 47 29 29 36 29 53 42 49 42 49 16 44 36 30 45
+        출력예제 1
+        17
 
+        입력예제 2
+        (((()(()()))(())()))(()())
 
-       예시 출력 1
-       143
-       */
-
-
-        Question5 T = new Question5();
+        출력예제 2
+        24
+        */
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int k = sc.nextInt();
-        int[] arr = new int[n];
-        for (int i=0; i<n; i++) {
-            arr[i] = sc.nextInt();
-        }
-
-
-        System.out.println(T.Solution(n, k, arr));
-
-
+        String str = sc.next();
+        System.out.println(solution(str));
     }
 
+    public static int solution(String str) {
+        int answer = 0;
+        String tmpStr = "";
+        int raswerCnt = 0;
+        Stack<Character> stack = new Stack<>();
 
-    public int Solution(int n, int k, int[] arr) {
-        List<Integer> tmplist = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            tmplist.add(arr[i]);
+        // 막대기 1개에 레이저 갯수 + 1 > 조각 개수
+
+        // 레이저 > * 변환
+        // () ((( () () )(())())) (())
+        // *(((**)(*)*))(*)
+        for (char x : str.toCharArray()) {
+            if (tmpStr.isEmpty()) {
+                tmpStr += x;
+                continue;
+            }
+
+            if (tmpStr.charAt(tmpStr.length()-1) == '(' && x == ')') {
+                String tmpStrV2 = tmpStr.substring(0, tmpStr.length()-1);
+                tmpStr = tmpStrV2 + '*';
+            } else {
+                tmpStr += x;
+            }
         }
-        Collections.sort(tmplist,  Collections.reverseOrder());
-        System.out.println("tmplist : "+tmplist);
-        return getSumForThree(tmplist, k);
-    }
 
+        // () ((( () () )(())())) (())
+        // *(((**)(*)*))(*)
+        for (char c : tmpStr.toCharArray()) {
 
-    public int getSumForThree(List<Integer> arr, int k) {
-        HashSet<Integer> sumList = new HashSet<>();
-        List<Integer> rslt = new ArrayList<>();
-        int totalSize = arr.size();
+            System.out.println("----------------");
+            System.out.println("1. stack : " + stack);
+            System.out.println("c : " + c);
+            System.out.println("answer : " + answer);
+            System.out.println("raswer : " + raswerCnt);
+            System.out.println();
 
+            if (stack.isEmpty() && c != '*') {
+                stack.push(c);
+                continue;
+            } else if (stack.isEmpty() && c == '*') {
+                continue;
+            }
 
-        for (int i = 0; i < totalSize; i++) {
-            for (int j = i + 1; j < totalSize; j++) {
-                for (int s = j + 1; s < totalSize; s++) {
-                    sumList.add(arr.get(i) +arr.get(j) + arr.get(s));
+            if (c == '(') {
+                stack.push(c);
+            } else if (c == '*') {
+                raswerCnt += 1;
+            } else {
+                stack.pop();
+                answer += (raswerCnt + 1);
+                if (stack.isEmpty()) {
+                    raswerCnt = 0;
                 }
             }
         }
-        rslt = new ArrayList<>(sumList);
-        Collections.sort(rslt, Collections.reverseOrder());
-
-
-        return rslt.get(k-1);
+        return answer;
     }
-}
 
+}

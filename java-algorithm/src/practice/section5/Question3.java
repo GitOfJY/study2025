@@ -1,62 +1,114 @@
 package practice.section5;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Question3 {
     public static void main(String[] args) {
-        /*
-          현수의 아빠는 제과점을 운영합니다. 현수아빠는 현수에게 N일 동안의 매출기록을 주고 연속된 K일 동안의 매출액의 종류를 각 구간별로 구하라고 했습니다.
-          만약 N=7이고 7일 간의 매출기록이 아래와 같고, 이때 K=4이면 20 12 20 10 23 17 10
-          각 연속 4일간의 구간의 매출종류는
-          첫 번째 구간은 [20, 12, 20, 10]는 매출액의 종류가 20, 12, 10으로 3이다.
-          두 번째 구간은 [12, 20, 10, 23]는 매출액의 종류가 4이다.
-          세 번째 구간은 [20, 10, 23, 17]는 매출액의 종류가 4이다.
-          네 번째 구간은 [10, 23, 17, 10]는 매출액의 종류가 3이다.
-          N일간의 매출기록과 연속구간의 길이 K가 주어지면 첫 번째 구간부터 각 구간별 매출액의 종류를 출력하는 프로그램을 작성하세요.
+       /*
+       크레인 인형뽑기(카카오)
+       게임개발자인 죠르디는 크레인 인형뽑기 기계를 모바일 게임으로 만들려고 합니다.
+       죠르디는 게임의 재미를 높이기 위해 화면 구성과 규칙을 다음과 같이 게임 로직에 반영하려고 합니다.
 
-          입력
-          첫 줄에 N(5<=N<=100,000)과 K(2<=K<=N)가 주어집니다.
-          두 번째 줄에 N개의 숫자열이 주어집니다. 각 숫자는 500이하의 음이 아닌 정수입니다.
+       게임 화면은 1 x 1 크기의 칸들로 이루어진 N x N 크기의 정사각 격자이며 위쪽에는 크레인이 있고 오른쪽에는 바구니가 있습니다.
+       (위 그림은 5 x 5 크기의 예시입니다). 각 격자 칸에는 다양한 인형이 들어 있으며 인형이 없는 칸은 빈칸입니다.
+       모든 인형은 1 x 1 크기의 격자 한 칸을 차지하며 격자의 가장 아래 칸부터 차곡차곡 쌓여 있습니다.
+       게임 사용자는 크레인을 좌우로 움직여서 멈춘 위치에서 가장 위에 있는 인형을 집어 올릴 수 있습니다.
+       집어 올린 인형은 바구니에 쌓이게 되는 데, 이때 바구니의 가장 아래 칸부터 인형이 순서대로 쌓이게 됩니다.
 
-          출력
-          첫 줄에 각 구간의 매출액 종류를 순서대로 출력합니다.
+       다음 그림은 [1번, 5번, 3번] 위치에서 순서대로 인형을 집어 올려 바구니에 담은 모습입니다.
+       만약 같은 모양의 인형 두 개가 바구니에 연속해서 쌓이게 되면 두 인형은 터뜨려지면서 바구니에서 사라지게 됩니다.
+       위 상태에서 이어서 [5번] 위치에서 인형을 집어 바구니에 쌓으면 같은 모양 인형 두 개가 없어집니다.
 
-          예시 입력 1
-          7 4
-          20 12 20 10 23 17 10
+       크레인 작동 시 인형이 집어지지 않는 경우는 없으나 만약 인형이 없는 곳에서 크레인을 작동시키는 경우에는 아무런 일도 일어나지 않습니다.
+       또한 바구니는 모든 인형이 들어갈 수 있을만큼 충분히 크다고 가정합니다. (그림에서는 화면표시 제약으로 5칸만으로 표현하였음)
+       게임 화면의 격자의 상태가 담긴 2차원 배열 board와 인형을 집기 위해 크레인을 작동시킨 위치가 담긴 배열 moves가 매개변수로 주어질 때,
+       크레인을 모두 작동시킨 후 터트려져 사라진 인형의 개수를 구하는 프로그램을 작성하세요.
 
-          예시 출력 1
-          3 4 4 3
-          */
-        // Question3 T = new Question3();
+       입력설명
+       첫 줄에 자연수 N(5<=N<=30)이 주어집니다.
+       두 번째 줄부터 N*N board 배열이 주어집니다.
+       board의 각 칸에는 0 이상 100 이하인 정수가 담겨있습니다.
+       0은 빈 칸을 나타냅니다.
+       1 ~ 100의 각 숫자는 각기 다른 인형의 모양을 의미하며 같은 숫자는 같은 모양의 인형을 나타냅니다.
+       board배열이 끝난 다음줄에 moves 배열의 길이 M이 주어집니다.
+       마지막 줄에는 moves 배열이 주어집니다.
+       moves 배열의 크기는 1 이상 1,000 이하입니다.
+       moves 배열 각 원소들의 값은 1 이상이며 board 배열의 가로 크기 이하인 자연수입니다.
+
+       출력설명
+       첫 줄에 터트려져 사라진 인형의 개수를 출력합니다.
+
+       입력예제 1
+       5
+       0 0 0 0 0
+       0 0 1 0 3
+       0 2 5 0 1
+       4 2 4 4 2
+       3 5 1 3 1
+       8
+       1 5 3 5 1 2 1 4
+
+       출력예제 1
+       4
+       */
+
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int k = sc.nextInt();
-        int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
+        int x = sc.nextInt();
+        int[][] arr = new int[x][x];
+
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < x; j++) {
+                arr[i][j] = sc.nextInt();
+            }
         }
 
-        for (String x : solution(n, k, arr)) {
-            System.out.print(x + " ");
+        int y = sc.nextInt();
+        int[] numArr = new int[y];
+        for (int i = 0; i < y; i++) {
+            numArr[i] = sc.nextInt();
         }
+        System.out.println(solution(x, arr, y, numArr));
     }
 
-    public static List<String> solution (int n, int k, int[] arr) {
-        List<String> answer = new ArrayList<>();
 
-        // 필요한 배열 갯수 : n-k+1개
-        for (int i = 0; i < n - k + 1; i++) {
-            HashSet<Integer> tmpSet = new HashSet<>();
-            for (int j = i; j < k+i; j++) {
-                tmpSet.add(arr[j]);
+    public static int solution(int x, int[][] arr, int y, int[] numArr) {
+        // 방법 1.
+        // 1. 스택을 x + 1개 생성 > for문 안에서 생성해야하는데 지역변수가 되어버림,,,
+        // 2. 2차원 배열 > 스택 x개에 넣기
+        // 3. 주어진대로 스택에서 pop
+        // 4. 최종 갯수 count
+
+        // 방법 2.
+        // 1. 스택 1개 생성
+        // 2. 주어진 숫자 + 컬럼 탐색하면서 0 이 아닌 값 찾아서 스택에 넣기
+        // 3. 뺀 숫자는 다시 0 으로 변환
+        // 4. 최종 갯수 count
+
+        Stack<Integer> stack = new Stack<>();
+
+        // y = 8, x = 5
+        for (int i = 0; i < y; i ++) {
+            for (int j = 0; j < x; j ++) {
+                if (arr[j][numArr[i]-1] != 0) {
+                    stack.push(arr[j][numArr[i]-1]);
+                    arr[j][numArr[i]-1] = 0;
+                    break;
+                }
             }
-            answer.add(String.valueOf(tmpSet.size()));
         }
 
-        return answer;
+        Stack<Integer> answerStack = new Stack<>();
+        for (int k = 0; k < stack.size(); k++) {
+            if (k == 0) {
+                answerStack.push(stack.get(k));
+            } else {
+                if (answerStack.peek() != stack.get(k)) {
+                    answerStack.push(stack.get(k));
+                } else {
+                    answerStack.pop();
+                }
+            }
+        }
+        return stack.size() - answerStack.size();
     }
 }
