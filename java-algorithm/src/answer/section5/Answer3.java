@@ -1,43 +1,51 @@
 package answer.section5;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class Answer3 {
     public static void main(String[] args) {
         Answer3 T = new Answer3();
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
-        int k = sc.nextInt();
-        int[] arr = new int[n];
-        for (int i = 0; i < n; i++) {
-            arr[i] = sc.nextInt();
+        int[][] board = new int[n][n];
+        for (int i = 0; i < n; i ++) {
+            for (int j = 0; j < n; j++) {
+                board[i][j] = sc.nextInt();
+            }
         }
-        for (int x : T.solution(n, k, arr)) {
-            System.out.print(x + " ");
+
+
+        int m = sc.nextInt();
+        int[] moves = new int[m];
+        for (int i = 0; i < m; i++) {
+            moves[i] = sc.nextInt();
         }
+
+
+        System.out.println(T.solution(board, moves));
     }
 
-    public ArrayList<Integer> solution(int n, int k, int[] arr) {
-        ArrayList<Integer> answer = new ArrayList<>();
-        HashMap<Integer, Integer> HM = new HashMap<>();
 
-        for (int i = 0; i < k-1; i++) {
-            HM.put(arr[i], HM.getOrDefault(arr[i], 0)+1);
-        }
-
-        // 슬라이딩윈도우 알고리즘
-        int lt = 0;
-        for (int rt = k-1; rt < n; rt++) {
-            HM.put(arr[rt], HM.getOrDefault(arr[rt], 0) + 1);
-            answer.add(HM.size());
-            HM.put(arr[lt], HM.get(arr[lt]) - 1);
-            if (HM.get(arr[lt]) == 0) {
-                HM.remove(arr[lt]);
+    public int solution(int[][] board, int[] moves) {
+        int answer = 0;
+        Stack<Integer> stack = new Stack<>();
+        for (int pos : moves) {
+            for (int i = 0; i < board.length; i ++) {
+                if (board[i][pos-1] != 0) {
+                    int tmp = board[i][pos-1];
+                    board[i][pos-1] = 0;
+                    if (!stack.isEmpty() && tmp == stack.peek()) {
+                        answer += 2;
+                        stack.pop();
+                    } else {
+                        stack.push(tmp);
+                    }
+                    break;
+                }
             }
-            lt++;
         }
+
         return answer;
     }
 }

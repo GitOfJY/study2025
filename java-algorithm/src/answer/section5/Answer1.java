@@ -1,31 +1,32 @@
 package answer.section5;
 
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class Answer1 {
     public static void main(String[] args) {
         Answer1 T = new Answer1();
         Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
         String str = sc.next();
-        System.out.println(T.solution(n,str));
+        System.out.println(T.solution(str));
     }
 
-    private char solution(int n, String s) {
-        char answer = ' ';
+    public String solution(String str) {
+        String answer = "YES";
+        Stack<Character> stack = new Stack<>();
 
-        HashMap<Character, Integer> map = new HashMap<>();
-        for (char x : s.toCharArray()) {
-            map.put(x, map.getOrDefault(x, 0)+1);
+        for (char x : str.toCharArray()) {
+            if (x == '(') {
+                stack.push(x);
+            } else {
+                if (stack.isEmpty()) {
+                    return "NO";
+                }
+                stack.pop();
+            }
         }
 
-        int max = Integer.MIN_VALUE;
-        for (char key : map.keySet()) {
-            if (map.get(key) > max) {
-                max = map.get(key);
-                answer = key;
-            }
+        if (!stack.isEmpty()) {
+            return "NO";
         }
 
         return answer;
