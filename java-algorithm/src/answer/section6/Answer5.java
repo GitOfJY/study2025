@@ -1,0 +1,33 @@
+package answer.section6;
+
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Answer5 {
+    public static void main(String[] args) {
+        Answer5 T = new Answer5();
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+
+        System.out.println(T.solution(n, arr));
+    }
+
+    public String solution(int n, int[] arr) {
+        String answer = "U";
+
+        // 오름차순 정렬
+        Arrays.sort(arr);
+
+        for (int i = 0; i < n-1; i++) {
+            if (arr[i] == arr[i+1]) {
+                return "D";
+            }
+        }
+
+        return answer;
+    }
+}
