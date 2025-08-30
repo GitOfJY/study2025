@@ -1,7 +1,8 @@
 package practice.section5;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
-import java.util.Stack;
 
 public class Question6 {
     public static void main(String[] args) {
@@ -30,9 +31,12 @@ public class Question6 {
 
         입력예제 1
         8 3
+        20 3
 
         출력예제 1
         7
+        20
+
         */
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
@@ -41,22 +45,24 @@ public class Question6 {
     }
 
     public static int solution (int n, int k) {
-        int answer = 0;
-        Stack<Integer> stack = new Stack<>();
+        Queue<Integer> queue = new LinkedList<>();
 
-        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            queue.add(i+1);
+        }
 
-        // n명에서 k번째 제외 stack push, stack 1 될때까지 반복
-        while (stack.size() > 1) {
+        // n명에서 k번째 제외 queue add/remove, queue.size 1 될때까지 반복
+        while (queue.size() > 1) {
             for (int i = 0; i < k; i++) {
                 if (i == k-1) {
-                    stack.pop();
+                    queue.remove(queue.peek());
+                } else {
+                    queue.add(queue.peek());
+                    queue.remove(queue.peek());
                 }
             }
         }
 
-        System.out.println("stack : " + stack);
-
-        return answer;
+        return queue.peek();
     }
 }
