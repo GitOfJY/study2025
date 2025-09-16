@@ -1,25 +1,41 @@
 package io.security.security_ex;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class IndexController {
+
+    @Autowired
+    SecurityContextService securityContextService;
+
     @GetMapping("/")
-    public String index(String customParam) {
-        if (customParam != null) {
-            return "customPage";
-        }
+    public String index() {
+        SecurityContext securityContext = SecurityContextHolder.getContextHolderStrategy().getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        System.out.println("Controller - authentication : " + authentication);
+
+        securityContextService.securityContext();
         return "index";
     }
 
     /*
     @GetMapping("/")
     public String index() {
+        return "index";
+    }
+
+    @GetMapping("/")
+    public String index(String customParam) {
+        if (customParam != null) {
+            return "customPage";
+        }
         return "index";
     }
     */
