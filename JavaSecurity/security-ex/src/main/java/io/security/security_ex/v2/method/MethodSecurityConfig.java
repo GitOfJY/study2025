@@ -1,5 +1,6 @@
 package io.security.security_ex.v2.method;
 
+import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.ClassFilter;
@@ -7,11 +8,15 @@ import org.springframework.aop.Pointcut;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.aspectj.AspectJExpressionPointcutAdvisor;
 import org.springframework.aop.support.ComposablePointcut;
+import org.springframework.aop.support.DefaultBeanFactoryPointcutAdvisor;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
+import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
 import org.springframework.security.authorization.AuthorityAuthorizationManager;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.authorization.method.AuthorizationManagerAfterMethodInterceptor;
 import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
 import org.springframework.security.authorization.method.AuthorizationManagerBeforeReactiveMethodInterceptor;
@@ -41,7 +46,7 @@ public class MethodSecurityConfig {
         AuthorityAuthorizationManager<MethodInvocation> manager = AuthorityAuthorizationManager.hasRole("USER");
         return new AuthorizationManagerBeforeMethodInterceptor(pattern, manager);
     }
-    */
+
 
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
@@ -57,5 +62,24 @@ public class MethodSecurityConfig {
 
         AuthorityAuthorizationManager<MethodInvocation> manager = AuthorityAuthorizationManager.hasRole("USER");
         return new AuthorizationManagerBeforeMethodInterceptor(composablePointcut, manager);
+    }
+     */
+
+    @Bean
+    public MethodInterceptor methodInterceptor() {
+        AuthorizationManager<MethodInvocation> authorizationManager = new AuthenticatedAuthorizationManager<>();
+        return new CustomMethodInterceptor(authorizationManager);
+    }
+
+    @Bean
+    public Pointcut pointcut() {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        pointcut.setExpression("execution(* io.security.security_ex.v2.DataService.*(..))");
+        return pointcut;
+    }
+
+    @Bean
+    public Advisor serviceAdvisor() {
+        return new DefaultPointcutAdvisor(pointcut(), methodInterceptor());
     }
 }
