@@ -15,7 +15,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
-    @PostMapping("/signup")
+    @PostMapping(value="/signup")
     public String signup(AccountDto accountDto) {
         ModelMapper mapper = new ModelMapper();
         Account account = mapper.map(accountDto, Account.class);               // ModelMapper 다른 객체로 값 복사

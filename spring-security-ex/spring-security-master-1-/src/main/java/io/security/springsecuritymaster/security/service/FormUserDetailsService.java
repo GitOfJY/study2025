@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service("userDeatilsService")
+@Service("userDetailsService")
 @RequiredArgsConstructor
 public class FormUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
