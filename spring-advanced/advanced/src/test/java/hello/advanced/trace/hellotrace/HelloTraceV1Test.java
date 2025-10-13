@@ -10,14 +10,14 @@ class HelloTraceV1Test {
     @Test
     void begin_end() {
         HelloTraceV1 helloTrace = new HelloTraceV1();
-        TraceStatus staus = helloTrace.being("hello");
+        TraceStatus staus = helloTrace.begin("hello");
         helloTrace.end(staus);
     }
 
     @Test
     void begin_exception() {
         HelloTraceV1 helloTrace = new HelloTraceV1();
-        TraceStatus staus = helloTrace.being("hello");
+        TraceStatus staus = helloTrace.begin("hello");
         helloTrace.exception(staus, new IllegalStateException());
     }
 }
