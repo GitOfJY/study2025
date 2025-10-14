@@ -1,0 +1,31 @@
+package hello.proxy.config.v1_proxy.concrete_proxy;
+
+import hello.proxy.app.v2.OrderServiceV2;
+import hello.proxy.trace.TraceStatus;
+import hello.proxy.trace.logtrace.LogTrace;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class OrderServiceConcreteProxy extends OrderServiceV2 {
+    private final OrderServiceV2 target;
+    private final LogTrace logtrace;
+
+    public OrderServiceConcreteProxy(OrderServiceV2 target, LogTrace logtrace) {
+        super(null);
+        this.target = target;
+        this.logtrace = logtrace;
+    }
+
+    @Override
+    public void orderItem(String itemId) {
+        TraceStatus status = null;
+        try {
+            status = logtrace.begin("OrderServiceConcreteProxy.orderItem");
+            target.orderItem(itemId);
+            logtrace.end(status);
+        } catch (Exception e) {
+            logtrace.exception(status, e);
+            throw e;
+        }
+    }
+}
