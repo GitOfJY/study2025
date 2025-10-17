@@ -1,0 +1,14 @@
+server:
+  port: 0
+
+spring:
+  kafka:
+    bootstrap-servers:
+      - 43.201.26.204:9092
+      - 43.201.26.204:19092
+      - 43.201.26.204:29092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+      auto-offset-reset: earliest
