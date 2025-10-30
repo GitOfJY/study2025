@@ -2,6 +2,7 @@ package chat.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 import static util.MyLogger.log;
 
@@ -23,6 +24,32 @@ public class Server {
         serverSocket = new ServerSocket(port);
         log("서버 소캣 시작 - 리스닝 포트: " + port);
 
+        // 셧다운 훅 등록
+        addShutdownHook();
+
+        // 프로그램 작동
+        running();
+
+    }
+
+    private void running() {
+        try {
+            while (true) {
+                Socket socket = serverSocket.accept(); // 블로킹
+                log("소캣 연결: " + socket);
+
+                Session session = new Session(socket, commandManager, sessionManager);
+                Thread thread = new Thread(session);
+                thread.start();
+            }
+        } catch (IOException e) {
+            log("서버 소캣 종료: " + e);
+        }
+    }
+
+    private void addShutdownHook() {
+        ShutdownHook target = new ShutdownHook(serverSocket, sessionManager);
+        Runtime.getRuntime().addShutdownHook(new Thread(target, "shutdown"));
     }
 
     static class ShutdownHook implements Runnable {
