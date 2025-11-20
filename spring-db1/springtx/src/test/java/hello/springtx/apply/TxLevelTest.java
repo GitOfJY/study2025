@@ -9,17 +9,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import java.util.logging.Level;
-
 @SpringBootTest
 public class TxLevelTest {
 
-    @Autowired LevelService levelService;
+    @Autowired LevelService service;
 
     @Test
-    void orderTEst() {
-        levelService.write();
-        levelService.read();
+    void orderTest() {
+        service.write();
+        service.read();
     }
 
     @TestConfiguration
@@ -33,6 +31,7 @@ public class TxLevelTest {
     @Slf4j
     @Transactional(readOnly = true)
     static class LevelService {
+
         @Transactional(readOnly = false)
         public void write() {
             log.info("call write");
@@ -46,9 +45,9 @@ public class TxLevelTest {
 
         private void printTxInfo() {
             boolean txActive = TransactionSynchronizationManager.isActualTransactionActive();
-            log.info("txActive={}", txActive);
+            log.info("tx active={}", txActive);
             boolean readOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();
-            log.info("readOnly={}", readOnly);
+            log.info("tx readOnly={}", readOnly);
         }
     }
 }
